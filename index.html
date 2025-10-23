@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수품책 연구회 - 책 속 수업, 수업 속 책</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-green {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .section-divider {
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #43e97b 100%);
+            margin: 3rem 0;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .book-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        function App() {
+            const [activeTab, setActiveTab] = useState('intro');
+
+            const members = [
+                { name: '여한기', school: '대구감천초등학교' },
+                { name: '김애자', school: '대구성산초등학교' },
+                { name: '김문화', school: '대구덕인초등학교' },
+                { name: '홍성민', school: '대구장동초등학교' },
+                { name: '박현주', school: '대구다사초등학교' }
+            ];
+
+            const activities = [
+                { icon: 'fa-calendar-days', text: '연구회 월별 정기 줌모임' },
+                { icon: 'fa-handshake', text: '오프라인 배움 나눔 모임' },
+                { icon: 'fa-book-open', text: '인문학 소양을 키우기 위한 문학기행' },
+                { icon: 'fa-chalkboard-user', text: '연구회 회원 수업참관' }
+            ];
+
+            const teacherCases = [
+                { teacher: '여한기 수석교사', subject: '도덕 교과', books: ['괜찮아 괜찮아 (4학년) - 최고 배려왕 뽑기', '나는 사람이에요 (4학년) - 인권과 존중', '버럭 어벨트 (3학년) - 감정 조절'] },
+                { teacher: '김애자 수석교사', subject: '통합 과학 교과', books: ['나는 기다립니다 (2학년) - 씨앗', '우주 다녀오겠습니다 - 우주 탐구', '그래도 지구는 돌다 - 지구와 우주'] },
+                { teacher: '박현주 수석교사', subject: '사회 교과', books: ['가라 소년 슬픔아 (6학년) - 근대사 탐구', '돌멩이의 여행 - 기후변화와 환경', '엄마의 의자 - 자원과 생산'] },
+                { teacher: '김문화 수석교사', subject: '국어 교과', books: ['독서록 쓰기 프로젝트 - 독서와 글쓰기', '학생 선택 시집 만들기 - 시 창작'] },
+                { teacher: '홍성민 수석교사', subject: '수학 교과', books: ['세라 선생님과 함께 - 학교생활과 규칙', '따뜻한 바람 언덕마을 - 가족과 이웃', '지구지구 초록별아 - 이웃 관계'] }
+            ];
+
+            const achievements = [
+                { icon: 'fa-book', title: '비교과토픽 통합 협력 시스템 구축' },
+                { icon: 'fa-image', title: '교과 내용 이해 심화: 추상적 내용을 구체적 이야기로 이해' },
+                { icon: 'fa-lightbulb', title: '교사 전문성 신장: 도서-교과 연계 수업 설계 역량 강화' },
+                { icon: 'fa-chart-line', title: '자료 구축: 도서 정보, 성취기준, 활동, 평가 포함' }
+            ];
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    {/* Header */}
+                    <header className="gradient-bg text-white py-16 shadow-lg">
+                        <div className="container mx-auto px-4">
+                            <div className="flex items-center justify-center mb-6">
+                                <i className="fas fa-book-open text-6xl book-icon"></i>
+                            </div>
+                            <h1 className="text-5xl font-bold text-center mb-4">수품책 연구회</h1>
+                            <p className="text-2xl text-center font-light">책 속 수업 - 수업 속 책</p>
+                            <div className="text-center mt-8 text-lg">
+                                <p className="italic">"책으로 여는 즐거운 수업을 위해!"</p>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Navigation */}
+                    <nav className="bg-white shadow-md sticky top-0 z-50">
+                        <div className="container mx-auto px-4">
+                            <div className="flex justify-center space-x-8 py-4">
+                                <button onClick={() => setActiveTab('intro')} className={`px-4 py-2 font-medium transition ${activeTab === 'intro' ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-600 hover:text-purple-600'}`}>
+                                    연구회 소개
+                                </button>
+                                <button onClick={() => setActiveTab('stats')} className={`px-4 py-2 font-medium transition ${activeTab === 'stats' ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-600 hover:text-purple-600'}`}>
+                                    연구 성과
+                                </button>
+                                <button onClick={() => setActiveTab('case')} className={`px-4 py-2 font-medium transition ${activeTab === 'case' ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-600 hover:text-purple-600'}`}>
+                                    수업 사례
+                                </button>
+                                <button onClick={() => setActiveTab('design')} className={`px-4 py-2 font-medium transition ${activeTab === 'design' ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-600 hover:text-purple-600'}`}>
+                                    수업 설계
+                                </button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Main Content */}
+                    <main className="container mx-auto px-4 py-12">
+                        {activeTab === 'intro' && (
+                            <div className="space-y-12">
+                                {/* 연구회 소개 */}
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-6 text-gray-800 flex items-center">
+                                        <i className="fas fa-info-circle text-purple-600 mr-3"></i>
+                                        연구회 소개
+                                    </h2>
+                                    <div className="prose max-w-none">
+                                        <p className="text-lg leading-relaxed text-gray-700 mb-4">
+                                            본 연구회의 수업 연구는 이런 생각에서 출발하였다. 여러 명의 수석교사가 각자 가르치는 과목은 다르지만 
+                                            책을 매개로 교과 수업을 좀 더 잘하고 싶은 바람은 같다.
+                                        </p>
+                                        <p className="text-lg leading-relaxed text-gray-700 mb-4">
+                                            연구회 운영을 통해 학습 주제 및 성취 기준에 적합한 다양한 도서를 활용하여 책으로 여는 즐거운 수업을 하고자 한다.
+                                        </p>
+                                        <div className="bg-purple-50 border-l-4 border-purple-600 p-6 my-6">
+                                            <h3 className="font-bold text-xl mb-2">연구회 활동 연혁</h3>
+                                            <ul className="space-y-2">
+                                                <li><strong>2022년:</strong> 연구회 시작</li>
+                                                <li><strong>2022-2023년:</strong> 국어, 도덕, 과학 및 통합 교과의 그림책 활용 수업 사례 연구</li>
+                                                <li><strong>출간:</strong> '그림책 활용 수업 레시피' 도서 출간</li>
+                                                <li><strong>2024-2025년:</strong> 그림책을 포함한 다양한 교과 연계 도서 및 다매체를 활용한 수업으로 연구 영역 확장</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* 연구회원 */}
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-8 text-gray-800 flex items-center">
+                                        <i className="fas fa-users text-purple-600 mr-3"></i>
+                                        연구회원
+                                    </h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {members.map((member, idx) => (
+                                            <div key={idx} className="card-hover bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-lg border-2 border-purple-200">
+                                                <div className="flex items-center space-x-4">
+                                                    <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                                                        {member.name[0]}
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="text-xl font-bold text-gray-800">{member.name}</h3>
+                                                        <p className="text-gray-600">{member.school}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+
+                                {/* 주요 활동 */}
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-8 text-gray-800 flex items-center">
+                                        <i className="fas fa-tasks text-purple-600 mr-3"></i>
+                                        주요 활동
+                                    </h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {activities.map((activity, idx) => (
+                                            <div key={idx} className="card-hover flex items-center space-x-4 p-6 bg-gradient-to-r from-green-50 to-teal-50 rounded-lg border-2 border-green-200">
+                                                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white">
+                                                    <i className={`fas ${activity.icon}`}></i>
+                                                </div>
+                                                <p className="text-lg font-medium text-gray-800">{activity.text}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-8 bg-blue-50 border-l-4 border-blue-500 p-6">
+                                        <h3 className="font-bold text-xl mb-2">문학기행 (2025.8.20.수)</h3>
+                                        <ul className="list-disc list-inside space-y-1 text-gray-700">
+                                            <li>노계 문학관, 도계 서원</li>
+                                            <li>들풀 시조 문학관, 청도 시조 공원</li>
+                                        </ul>
+                                    </div>
+                                </section>
+
+                                {/* 연구자별 수업 사례 */}
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-8 text-gray-800 flex items-center">
+                                        <i className="fas fa-book-reader text-purple-600 mr-3"></i>
+                                        연구자별 수업 사례
+                                    </h2>
+                                    <div className="space-y-6">
+                                        {teacherCases.map((item, idx) => (
+                                            <div key={idx} className="card-hover bg-gradient-to-r from-purple-50 via-pink-50 to-blue-50 p-6 rounded-lg border-2 border-purple-200">
+                                                <div className="flex items-start space-x-4">
+                                                    <div className="flex-shrink-0">
+                                                        <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                                                            {idx + 1}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex-grow">
+                                                        <h3 className="text-xl font-bold text-purple-700 mb-2">{item.teacher}</h3>
+                                                        <p className="text-gray-600 font-medium mb-3">{item.subject}</p>
+                                                        <ul className="space-y-1">
+                                                            {item.books.map((book, bookIdx) => (
+                                                                <li key={bookIdx} className="text-gray-700 flex items-start">
+                                                                    <i className="fas fa-book text-purple-500 mr-2 mt-1"></i>
+                                                                    <span>{book}</span>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            </div>
+                        )}
+
+                        {activeTab === 'stats' && (
+                            <div className="space-y-12">
+                                {/* 연구 개요 */}
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-8 text-gray-800 flex items-center">
+                                        <i className="fas fa-chart-bar text-purple-600 mr-3"></i>
+                                        연구 개요
+                                    </h2>
+                                    <div className="text-center mb-6">
+                                        <p className="text-gray-600 mb-2">연구 목적: 교과 수업과 그림책·도서 연계 수업 설계 및 실천</p>
+                                        <p className="text-gray-600 mb-6">연구 기간: 2024~2025학년도</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                                        <div className="stat-card">
+                                            <div className="stat-number">25</div>
+                                            <p className="text-xl text-gray-600 mt-2">건</p>
+                                            <p className="text-lg font-medium text-gray-700 mt-2">수업 사례</p>
+                                        </div>
+                                        <div className="stat-card">
+                                            <div className="stat-number">5</div>
+                                            <p className="text-xl text-gray-600 mt-2">개</p>
+                                            <p className="text-lg font-medium text-gray-700 mt-2">교과</p>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* 핵심 성과 */}
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-8 text-gray-800 flex items-center">
+                                        <i className="fas fa-trophy text-purple-600 mr-3"></i>
+                                        핵심 성과
+                                    </h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {achievements.map((achievement, idx) => (
+                                            <div key={idx} className="card-hover bg-gradient-to-br from-green-50 to-teal-50 p-6 rounded-lg border-2 border-green-200">
+                                                <div className="flex items-start space-x-4">
+                                                    <div className="flex-shrink-0">
+                                                        <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white">
+                                                            <i className={`fas ${achievement.icon}`}></i>
+                                                        </div>
+                                                    </div>
+                                                    <p className="text-lg font-medium text-gray-800 mt-2">{achievement.title}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+
+                                {/* 주요 수업 방법 */}
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-8 text-gray-800 flex items-center">
+                                        <i className="fas fa-clipboard-list text-purple-600 mr-3"></i>
+                                        주요 수업 방법
+                                    </h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <div className="card-hover bg-yellow-50 p-6 rounded-lg border-2 border-yellow-300">
+                                            <h3 className="text-xl font-bold text-yellow-700 mb-3">개별기반탐구학습</h3>
+                                            <p className="text-gray-700">책의 개별 주제에 대한 탐구 활동</p>
+                                        </div>
+                                        <div className="card-hover bg-blue-50 p-6 rounded-lg border-2 border-blue-300">
+                                            <h3 className="text-xl font-bold text-blue-700 mb-3">도서 활용 수업</h3>
+                                            <p className="text-gray-700">그림책과 교과 내용 연계</p>
+                                        </div>
+                                        <div className="card-hover bg-pink-50 p-6 rounded-lg border-2 border-pink-300">
+                                            <h3 className="text-xl font-bold text-pink-700 mb-3">프로젝트 수업</h3>
+                                            <p className="text-gray-700">학생 주도 협력 활동</p>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* 연구의 의의 */}
+                                <section className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-6 flex items-center">
+                                        <i className="fas fa-star mr-3"></i>
+                                        연구의 의의
+                                    </h2>
+                                    <ul className="space-y-4 text-lg">
+                                        <li className="flex items-start">
+                                            <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                            <span>교과 학습과 독서 교육의 자연스러운 융합</span>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                            <span>학생 중심 수업 설계 문화 확산</span>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                            <span>실천 가능한 수업 자료 개발 및 공유</span>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <i className="fas fa-check-circle mr-3 mt-1"></i>
+                                            <span>교사 협력 문화와 전문성 신장</span>
+                                        </li>
+                                    </ul>
+                                </section>
+                            </div>
+                        )}
+
+                        {activeTab === 'case' && (
+                            <div className="space-y-12">
+                                {/* 도서 정보 */}
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-8 text-gray-800 flex items-center">
+                                        <i className="fas fa-book text-purple-600 mr-3"></i>
+                                        수업 사례: 나는 사람이에요
+                                    </h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="bg-gradient-to-br from-green-50 to-teal-50 p-6 rounded-lg border-2 border-green-200">
+                                            <h3 className="text-2xl font-bold text-gray-800 mb-4">📚 도서 정보</h3>
+                                            <div className="space-y-2">
+                                                <p className="text-gray-700"><strong>제목:</strong> 나는 ( ) 사람이에요</p>
+                                                <p className="text-gray-700"><strong>글:</strong> 수전 베르데</p>
+                                                <p className="text-gray-700"><strong>그림:</strong> 피터 H. 레이놀즈</p>
+                                            </div>
+                                        </div>
+                                        <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-200">
+                                            <h3 className="text-2xl font-bold text-gray-800 mb-4">🎯 성취기준</h3>
+                                            <p className="text-gray-700 font-medium">[4도01-01]</p>
+                                            <p className="text-gray-700 mt-2">자신의 감정을 소중히 여기며 존중하는 태도를 바탕으로 내가 누구인가를 탐구한다.</p>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* 도서 내용 및 선정 이유 */}
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-6 text-gray-800 flex items-center">
+                                        <i className="fas fa-question-circle text-purple-600 mr-3"></i>
+                                        도서 내용 및 선정 이유
+                                    </h2>
+                                    <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
+                                        <h3 className="font-bold text-xl mb-3">📖 주인공의 이야기</h3>
+                                        <p className="text-gray-700 mb-3"><em>"나는 사람이에요."</em></p>
+                                        <p className="text-gray-700 mb-3"><em>"때로는 실수하지만, 실수를 통해 배울 수 있어요."</em></p>
+                                        <p className="text-gray-700"><em>"나는 나만의 특별함을 가지고 있어요. 하지만 우리는 모두 연결되어 있죠."</em></p>
+                                    </div>
+                                    
+                                    <div className="bg-green-50 border-l-4 border-green-500 p-6">
+                                        <h3 className="font-bold text-xl mb-3">✨ 선정 이유</h3>
+                                        <p className="text-gray-700 leading-relaxed">
+                                            이 책은 사람으로서 우리가 느끼는 다양한 감정과 실수를 담아 이야기입니다.
+                                        </p>
+                                        <ul className="mt-4 space-y-2 text-gray-700">
+                                            <li className="flex items-start">
+                                                <i className="fas fa-heart text-green-500 mr-2 mt-1"></i>
+                                                <span>주인공은 사람으로서 완벽하지 않다는 사실을 받아들이며</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <i className="fas fa-heart text-green-500 mr-2 mt-1"></i>
+                                                <span>실수를 하고, 화를 내기도 하고, 때로는 슬퍼하기도 합니다</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <i className="fas fa-heart text-green-500 mr-2 mt-1"></i>
+                                                <span>하지만 그런 실수와 감정들을 통해 더 나은 선택들을 하고 성장할 수 있습니다</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <i className="fas fa-heart text-green-500 mr-2 mt-1"></i>
+                                                <span>자신의 특별함을 발견하고, 서로 연결된 존재임을 깨닫습니다</span>
+                                            </li>
+                                            <li className="flex items-start">
+                                                <i className="fas fa-heart text-green-500 mr-2 mt-1"></i>
+                                                <span>우리는 모두 사람이기에 실수를 통해 성장한다는 점을 상기시켜주는 따뜻한 메시지입니다</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                        )}
+
+                        {activeTab === 'design' && (
+                            <div className="space-y-12">
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-8 text-gray-800 flex items-center">
+                                        <i className="fas fa-pencil-ruler text-purple-600 mr-3"></i>
+                                        수업 설계 과정
+                                    </h2>
+                                    
+                                    {/* 1단계 */}
+                                    <div className="mb-12">
+                                        <div className="flex items-center mb-6">
+                                            <div className="step-number">1</div>
+                                            <h3 className="text-2xl font-bold text-gray-800 ml-4">생각 열기</h3>
+                                        </div>
+                                        <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6 ml-16">
+                                            <p className="font-bold text-lg text-purple-700 mb-4">활동 목표: 수업 주제 및 학습 안내, 자유 이야기 나누기</p>
+                                            <div className="space-y-4">
+                                                <div className="bg-white p-4 rounded-lg">
+                                                    <p className="font-bold text-gray-800 mb-2">❓ 사람은 누구나 실수를 할 수 있죠. 실수를 할 때 어떤 감정을 느끼나요?</p>
+                                                </div>
+                                                <div className="bg-white p-4 rounded-lg">
+                                                    <p className="font-bold text-gray-800 mb-2">❓ 실수를 통해 배운 점이 있다면 무엇이었나요?</p>
+                                                </div>
+                                                <div className="bg-white p-4 rounded-lg">
+                                                    <p className="font-bold text-gray-800 mb-2">❓ 우리는 모두 각자 다른 특징과 능력을 가지고 있어요. 여러분이 가진 자신의 특별함은 무엇이라고 생각하나요?</p>
+                                                </div>
+                                                <div className="bg-white p-4 rounded-lg">
+                                                    <p className="font-bold text-gray-800 mb-2">❓ 친구가 실수를 했을 때, 여러분은 어떻게 도와주고 싶나요?</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* 2단계 */}
+                                    <div className="mb-12">
+                                        <div className="flex items-center mb-6">
+                                            <div className="step-number">2</div>
+                                            <h3 className="text-2xl font-bold text-gray-800 ml-4">생각 확장하기</h3>
+                                        </div>
+                                        
+                                        <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6 ml-16 mb-6">
+                                            <h4 className="font-bold text-xl text-green-700 mb-4">활동 1: 그때 그랬는데 (감정 바구니)</h4>
+                                            <div className="bg-white p-4 rounded-lg mb-4">
+                                                <p className="font-bold text-gray-800 mb-2">📖 감정 표현 활동</p>
+                                                <p className="text-gray-700 mb-3">목표: 학생들이 다양한 감정을 시각적으로 표현하고, 그 감정에 대한 이야기를 나누며 감정에 대한 이해를 확장</p>
+                                                <ol className="list-decimal list-inside space-y-2 text-gray-700 ml-4">
+                                                    <li>교사 앞에 '감정 바구니'를 준비해 둔다</li>
+                                                    <li>각 학생은 자신의 감정을 나타내는 다양한 감정카드를 선택한다 (기쁨 감정, 슬픔 감정, 실수 후 느낌 등)</li>
+                                                    <li>감정 카드에 그 감정에 대한 짧은 설명을 적어 넣는다 (예: "내가 친구에게 실수했을 때 미안했어요")</li>
+                                                    <li>모든 학생이 자신의 감정 카드를 바구니에 넣은 후, 몇 명씩 카드를 뽑아 친구의 감정에 대해 이야기한다</li>
+                                                    <li>카드를 읽은 학생은 이 감정에 공감하는 자신의 경험을 이야기하거나 그때 느낀 감정을 있는 그대로 이해하고 받아들이는 자세가 중요함을 강조한다</li>
+                                                </ol>
+                                            </div>
+                                            <div className="bg-yellow-50 p-4 rounded-lg">
+                                                <p className="font-bold text-yellow-800 mb-2">💡 교수학습 전략</p>
+                                                <p className="text-gray-700">학생들이 다양한 감정을 자유롭게 표현할 수 있는 환경을 조성하고, 각자의 감정을 표현한 후 공감과 경청을 통해 서로를 이해한다. 감정의 원인에 대해 깊이 있게 탐색하지 않더라도, 그때 느낀 감정을 있는 그대로 이해하고 받아들이는 자세가 중요함을 강조한다.</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 ml-16">
+                                            <h4 className="font-bold text-xl text-blue-700 mb-4">활동 2: 카드로 나를 소개하기</h4>
+                                            <div className="bg-white p-4 rounded-lg">
+                                                <p className="font-bold text-gray-800 mb-2">🎨 자기 표현 활동</p>
+                                                <p className="text-gray-700 mb-3">목표: 자신의 정체성을 돌아보고, 자신을 나타내는 특색 키워드로 창의적으로 표현하며 자기를 이해해 자기표현 능력 기르기</p>
+                                                <ol className="list-decimal list-inside space-y-2 text-gray-700 ml-4">
+                                                    <li>학생들은 자신을 나타내는 키워드 3~5개를 생각한다 (예: 도전적, 친절한, 운동을 좋아하는, 책을 사랑하는)</li>
+                                                    <li>자기 소개 카드를 작성한다 (이름과 함께 키워드를 적고, 왜 그 키워드를 선택했는지 이유 쓰기)</li>
+                                                    <li>각 학생은 자신의 카드를 나누어 발표하기</li>
+                                                    <li>친구들은 자기 소개를 들은 후, 각자가 느낀 장점을 긍정적인 피드백으로 나눈다</li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* 3단계 */}
+                                    <div>
+                                        <div className="flex items-center mb-6">
+                                            <div className="step-number">3</div>
+                                            <h3 className="text-2xl font-bold text-gray-800 ml-4">생각 정리하기</h3>
+                                        </div>
+                                        
+                                        <div className="bg-pink-50 border-2 border-pink-200 rounded-lg p-6 ml-16">
+                                            <h4 className="font-bold text-xl text-pink-700 mb-4">인생 그래프 그리기</h4>
+                                            <div className="bg-white p-4 rounded-lg mb-4">
+                                                <p className="font-bold text-gray-800 mb-2">📊 성찰 활동</p>
+                                                <p className="text-gray-700 mb-3">목표: 자신의 인생에서 중요한 순간을 돌아보고, 그 순간들을 인생그래프로 표현하며 성찰하기</p>
+                                                <ol className="list-decimal list-inside space-y-2 text-gray-700 ml-4">
+                                                    <li>교사는 학생들에게 인생그래프에 대해 설명한다 ("인생에서 기뻤던 가장 큰 순간과 슬펐던 순간 적기")</li>
+                                                    <li>학생들은 자신의 인생에서 가장 기억에 나는 사건을 떠올리며, 그 순간들을 인생그래프로 그린다</li>
+                                                    <li>기쁨과 슬픔, 성공과 실수 등 자신에게 큰 영향을 준 경험을 그래프의 상승과 하강으로 표현하기</li>
+                                                    <li>학생들은 각자 자신의 인생그래프를 설명하며 경험을 공유한다</li>
+                                                </ol>
+                                            </div>
+                                            <div className="bg-purple-50 p-4 rounded-lg">
+                                                <p className="text-gray-700 italic">"가장 기뻤던 가장 큰 순간은 무엇인가요?" / "인생 그래프에서 가장 낮았던 순간은 무엇인가요? 어떻게 극복했나요?"</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* 학습평가 */}
+                                <section className="bg-white rounded-lg shadow-lg p-8">
+                                    <h2 className="text-3xl font-bold mb-8 text-gray-800 flex items-center">
+                                        <i className="fas fa-clipboard-check text-purple-600 mr-3"></i>
+                                        학습평가
+                                    </h2>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                        <div className="card-hover bg-green-50 p-6 rounded-lg border-2 border-green-300">
+                                            <h3 className="text-2xl font-bold text-green-700 mb-3 text-center">상</h3>
+                                            <p className="text-gray-700 text-center">실수에 대한 성찰과, 앞으로 어떻게 성장할 것인지 구체적인 계획을 제시함</p>
+                                        </div>
+                                        <div className="card-hover bg-yellow-50 p-6 rounded-lg border-2 border-yellow-300">
+                                            <h3 className="text-2xl font-bold text-yellow-700 mb-3 text-center">중</h3>
+                                            <p className="text-gray-700 text-center">실수에 대한 건전한 성찰과 성장의 가능성을 보여줌</p>
+                                        </div>
+                                        <div className="card-hover bg-orange-50 p-6 rounded-lg border-2 border-orange-300">
+                                            <h3 className="text-2xl font-bold text-orange-700 mb-3 text-center">하</h3>
+                                            <p className="text-gray-700 text-center">실수에 대한 성찰이 부족하고, 성장에 대한 계획이 미흡함</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-6">
+                                        <h3 className="font-bold text-xl text-purple-700 mb-4">💬 수업 후기</h3>
+                                        <div className="space-y-3">
+                                            <div className="bg-white p-4 rounded-lg">
+                                                <p className="text-gray-700 italic">"저도 실수를 많이 했는데요. 이 책을 읽고 나니까 실수해도 괜찮다는 생각이 들었어요."</p>
+                                            </div>
+                                            <div className="bg-white p-4 rounded-lg">
+                                                <p className="text-gray-700 italic">"친구가 실수했을 때 내가 어떻게 해야 하는지 알게 되었어요. 그냥 화내지 않고, 그 친구를 이해하고 도와줘야겠어요."</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6 mt-6">
+                                        <h3 className="font-bold text-xl text-yellow-700 mb-4">👨‍🏫 선생님 이야기</h3>
+                                        <p className="text-gray-700 leading-relaxed">
+                                            오늘 수업을 통해 아이들이 자신의 감정과 실수를 어떻게 받아들이고 성장할 수 있는지 깊이 생각해 볼 수 있는 시간이 되었습니다. 
+                                            특히, 친구의 실수를 이해하고 배려하는 아이들의 반응이 인상 깊었어요. 앞으로도 아이들이 실수 속에서 배우고 서로를 배려하는 태도를 길러 
+                                            나갈 수 있도록 꾸준하게 지도해야겠다는 느낌입니다.
+                                        </p>
+                                    </div>
+                                </section>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="gradient-bg text-white py-8 mt-16">
+                        <div className="container mx-auto px-4 text-center">
+                            <p className="text-lg mb-2">수품책 연구회 - 책 속 수업, 수업 속 책</p>
+                            <p className="text-sm opacity-80">책으로 여는 즐거운 수업을 위해 함께 연구하고 성장합니다</p>
+                            <div className="mt-4 flex justify-center space-x-4">
+                                <i className="fas fa-book-open text-2xl"></i>
+                                <i className="fas fa-users text-2xl"></i>
+                                <i className="fas fa-graduation-cap text-2xl"></i>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
