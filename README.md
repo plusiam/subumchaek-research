@@ -4,7 +4,7 @@
 
 ## 프로젝트 소개
 
-수품책 연구회의 활동과 연구 성과를 소개하는 웹사이트입니다. 
+수품책 연구회의 활동과 연구 성과를 소개하는 웹사이트입니다.
 2022년부터 시작된 본 연구회는 교과 수업과 도서를 연계하여 즐거운 수업을 만들어가는 수석교사들의 모임입니다.
 
 ## 주요 내용
@@ -54,7 +54,7 @@
 
 ```bash
 # 프로젝트 클론
-git clone [repository-url]
+git clone https://github.com/plusiam/subumchaek-research.git
 
 # 디렉토리 이동
 cd subumchaek-research
@@ -65,11 +65,8 @@ open index.html
 
 ## 배포
 
-GitHub Pages를 통해 배포 가능합니다:
-
-1. GitHub 저장소 생성
-2. 코드 푸시
-3. Settings > Pages에서 배포 설정
+GitHub Pages를 통해 배포되었습니다:
+https://plusiam.github.io/subumchaek-research/
 
 ## 연구회 정보
 
